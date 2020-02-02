@@ -1,0 +1,18 @@
+# TDA MONEDA
+- ### **Moneda:** tipo de dato que cMoneda, cDueño, TransferenciaM, TransferenciaU, mostraUser. 
+- ### **DESCRIPCIÓN:** los valores de TDA **moneda** son números enteros o decimales positivos y cadenas de caracteres. TDA Moneda es inmutable. 
+- ### **OPERACIONES:** 
+    - **cMoneda** (nom; cadena de caracteres, cant,a; decimal) devuelve (moneda).
+        - 	Requerimiento: 0.00< cant < a.
+        - 	Efecto: devuelve el un tipo de moneda cuyo nombre es nom y cantidad es cant. 
+    - **cDueño** (ID; entero, nom; cadena de caracteres, cant; moneda) devuelve (usuario)
+        - 	Efecto: devuelve un usuario para hacer las gestaciones. 
+    - **TransferenciaM** (usa; User, cant; decimal) devuelve (transferencia de monedas)
+        - 	Requerimiento: : moneda exista, cant < cantidad maxima de monedas. 
+        - 	Efecto: devuelve la cantidad de monedas en propiedad de usuario. 
+    - **TransferenciaU** (user1, user2; User, cant; Moneda) devuelve (transferencia entre usuarios)
+        - 	Requerimiento: moneda exista, cantt < cantidad maxima de monedas, usuario exista, user1 diferente user2
+        - 	Efecto: agrega monedas a user2 y quita la mismas de user1. 
+    - **mostraUser** (lst_moneda;Moneda) devuelve(Usuarios Con Monedas)
+        - Requerimento: lst_moneda>0.
+        - Efecto: muestra una lista con los usuarios y la cantidad de monedas que este posee.
