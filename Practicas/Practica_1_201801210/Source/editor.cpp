@@ -3,12 +3,17 @@
 #include <iostream>
 #include <ncurses.h>
 #include <curses.h>
+#include "lista_doble.h"
+#include "fstream"
 using namespace std;
 WINDOW *nueva_ventana(int largo, int ancho, int pos_y, int pos_x);
 bool con = false;
+void guardar_archivo(string ruta);
 
-
+Nodo *nodo1 = new Nodo();
 void Editor::crear_Editor(){
+    char cadena;
+    string ruta;
     char buscar;
     int x,y;
     int marcox=75,marcoy=20;
@@ -18,7 +23,6 @@ void Editor::crear_Editor(){
     refresh();
     ventana = nueva_ventana(marcoy, marcox, 2,2);
     keypad(ventana,true);
-    wmove(ventana,24,2);
     wprintw(ventana,"^W buscar y editar  ^C Reportes  ^S Guardar");
     wmove(ventana,2,2);
     int caracter;
@@ -57,6 +61,7 @@ void Editor::crear_Editor(){
             wmove(ventana,y,x-1);
             wprintw(ventana," ");
             wmove(ventana,y,x-1);
+            nodo1->borrar_ultimo();
             break;
         case KEY_BACKSPACE:
             getyx(ventana,y,x);
@@ -68,9 +73,16 @@ void Editor::crear_Editor(){
         case 10:
             getyx(ventana,y,x);
             wmove(ventana,y+1,2);
+            nodo1->insertar_Nodo('\n');
             break;
         case 19:
-            printw("guardar");
+            wmove(ventana,marcoy-1,2);
+            wprintw(ventana,"Escriba nombre: ");
+            do{
+            cadena = wgetch(ventana);
+            ruta = ruta + cadena ;
+        }while(cadena != 10);
+            guardar_archivo(ruta);
             break;
         case 23:
             wmove(ventana,marcoy-1,2);
@@ -83,7 +95,7 @@ void Editor::crear_Editor(){
              con = true;
              break;
          default:
-            wprintw(ventana,"G");
+           nodo1->insertar_Nodo(caracter);
             break;
          }
      }
@@ -91,6 +103,16 @@ void Editor::crear_Editor(){
     endwin();
 }
 
+void guardar_archivo(string ruta){
+    ofstream archivo_s(ruta);
+    Caracter*actual=new Caracter();
+    actual = nodo1->primero;
+    while(actual != NULL){
+            archivo_s << actual->getcaracter();
+            actual = actual->getsiguiente();
+    }
+    archivo_s.close();
+}
 WINDOW *nueva_ventana(int largo, int ancho, int pos_y, int pos_x)
 { WINDOW *local_win;
   local_win = newwin(largo, ancho, pos_y, pos_x);
