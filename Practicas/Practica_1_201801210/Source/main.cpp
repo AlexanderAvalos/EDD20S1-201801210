@@ -9,10 +9,14 @@ using namespace std;
 #include "lista_circular.h"
 #include "lista_doble.h"
 #include "editor.h"
-#include"abrir_en_editor.h"
+#include "abrir_en_editor.h"
+#include "editor_rutas.h"
+string no;
 
-
+ int smenu;
+ NodoC *nodoC1;
 void menu(){
+    do{
     cout << "_________________________________________________\n";
     cout << "|                                         \t|\n";
     cout <<("| UNIVERSIADAD DE SAN CARLOS DE GUATEMALA  \t| \n");
@@ -30,26 +34,32 @@ void menu(){
     cout << "|                                         \t|\n";
     cout << "|_______________________________________________|\n";
 
-    int smenu;
+
     cin >> smenu;
     switch(smenu){
-    case 1: cout<<"opcion 1\n";
+    case 1:
         Editor::crear_Editor();
         break;
-    case 2: cout<<"opcion 2\n";
-        menu();
+    case 2:
+       cout<<"Ingrese ruta: ";
+       cin>>no;
+       Abrir_En_Editor::leer_archivo(no);
+       clear();
+       Abrir_En_Editor::crear_EditorA();
         break;
-    case 3: cout<<"opcion 3\n";
-        menu();
+    case 3:
+        Editor_Rutas::e_rutas();
+
         break;
     case 4:
         exit(0);
         break;
     }
+    }while(smenu < 5);
 }
 
 int main()
 {
-    Abrir_En_Editor::crear_EditorA();
+    menu();
 return 0;
        }
