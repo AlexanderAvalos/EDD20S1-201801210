@@ -1,10 +1,11 @@
+#include "caracter.h"
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 using namespace std;
 
 class Nodo{
-
 public:
     Caracter *primero = NULL;
     Caracter *ultimo =NULL;
@@ -36,6 +37,13 @@ public:
             ultimo=nuevo;
         }
     }
+
+    void borrar_lista(){
+        primero = NULL;
+        ultimo = NULL;
+    }
+
+
     void mostrar_Derecha_a_Izquierda(){
         Caracter *actual = new Caracter();
         actual = primero;
