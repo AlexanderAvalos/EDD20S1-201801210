@@ -10,11 +10,13 @@
 #include <iomanip>
 #include <string.h>
 #include <stdio.h>
+#include "pilaB.h"
+#include "iniciar_lista.h"
 using namespace std;
 
 
 WINDOW *nueva_ventana_E(int largo, int ancho, int pos_y, int pos_x);
-
+void buscar_y_reemplazar(string cadenaL, string palabra_B, string palabra_N);
 bool cont = false;
 string nombre;
 void reconocer_Nombre(string dir);
@@ -23,11 +25,16 @@ void guardar_archivo_E(string ruta);
 int x,y;
 Nodo *nodo = new Nodo();
 static NodoC *nodoC = new NodoC();
-void Abrir_En_Editor::crear_EditorA(){
+NodoP *pilaBE = new NodoP();
+NodoP *pilaRE = new NodoP();
 
+
+void Abrir_En_Editor::crear_EditorA(){
+    string cadenaL;
+    string bus, rem;
+    char buscar,reemplazar;
   string ruta;
     WINDOW *ventana;
-    char buscar;
     int marcox=75,marcoy=20;
     char cadena;
     initscr();
@@ -107,14 +114,77 @@ void Abrir_En_Editor::crear_EditorA(){
             refresh();
             break;
         case 23:
+            actual=nodo->primero;
+            while (actual != NULL) {
+                cadenaL = cadenaL + actual->getcaracter();
+                actual = actual->getsiguiente();
+            }
             wmove(ventana,marcoy-1,2);
-            wprintw(ventana,"buscar y reemplazar: ");
+            wprintw(ventana,"buscar: ");
+            do{
             buscar = wgetch(ventana);
-            refresh();
-            wmove(ventana,2,2);
+            if(buscar != ';'){bus = bus + buscar ;}
+            }while(buscar != ';');
+          wmove(ventana,marcoy-1,2);
+          wprintw(ventana,"Remplazar: ");
+          do{
+                reemplazar = wgetch(ventana);
+                rem = rem +reemplazar;
+            }while(reemplazar != 10);
+          wclear(ventana);
+          buscar_y_reemplazar(cadenaL,bus,rem);
+          ventana = nueva_ventana_E(20,75,2,2);
+          wmove(ventana,2,2);
+          actual = nodo->primero;
+          wmove(ventana,2,2);
+          while(actual != NULL){
+              getyx(ventana,y,x);
+              if(actual->getcaracter() == '\n'){
+                  wmove(ventana,y+1,2);
+              }else{
+                  wprintw(ventana,"%c",actual->getcaracter());}
+              actual = actual->getsiguiente();
+          }
+          pilaBE->push(bus,rem,"No Revertido");
              break;
          case 24:
              cont = true;
+            break;
+        case 25:
+            pilaRE->pop();
+            buscar_y_reemplazar(cadenaL,bus,rem);
+            wclear(ventana);
+            ventana = nueva_ventana_E(20,75,2,2);
+            wmove(ventana,2,2);
+            actual = nodo->primero;
+            wmove(ventana,2,2);
+            while(actual != NULL){
+                getyx(ventana,y,x);
+                if(actual->getcaracter() == '\n'){
+                    wmove(ventana,y+1,2);
+                }else{
+                    wprintw(ventana,"%c",actual->getcaracter());}
+                actual = actual->getsiguiente();
+            }
+            pilaBE->push(bus,rem,"No Revertido");
+            break;
+        case 26:
+            pilaBE->pop();
+            buscar_y_reemplazar(cadenaL,rem,bus);
+            wclear(ventana);
+            ventana = nueva_ventana_E(20,75,2,2);
+            wmove(ventana,2,2);
+            actual = nodo->primero;
+            wmove(ventana,2,2);
+            while(actual != NULL){
+                getyx(ventana,y,x);
+                if(actual->getcaracter() == '\n'){
+                    wmove(ventana,y+1,2);
+                }else{
+                    wprintw(ventana,"%c",actual->getcaracter());}
+                actual = actual->getsiguiente();
+            }
+             pilaRE->push(bus,rem,"Revertido");
             break;
          default:
             nodo->insertar_Nodo(caracter);
@@ -125,8 +195,20 @@ void Abrir_En_Editor::crear_EditorA(){
     endwin();
 }
 
+void guardar_archivo_E(string ruta){
+    ofstream archivo_s(ruta);
+    Caracter *ac = new Caracter();
+    ac = nodo->primero;
+    while(ac != NULL){
+            archivo_s << ac->getcaracter();
+            ac = ac->getsiguiente();
+    }
+    archivo_s.close();
+}
+
 void  reconocer_Nombre(string dir){
     int contador = 0,contador2=0;
+
     bool cona = false;
     int cantidad = dir.length();
     while(cona != true){
@@ -143,21 +225,12 @@ void  reconocer_Nombre(string dir){
         if(contador == cantidad){
             cona = true;
             nodoC->insertar_NodoC(nombre,dir);
+
         }
         contador++;
     }
 }
 
-void guardar_archivo_E(string ruta){
-    ofstream archivo_s(ruta);
-    Caracter *ac = new Caracter();
-    ac = nodo->primero;
-    while(ac != NULL){
-            archivo_s << ac->getcaracter();
-            ac = ac->getsiguiente();
-    }
-    archivo_s.close();
-}
 void Abrir_En_Editor::leer_archivo(string direccion){
     string texto;
     ifstream archivo;
@@ -191,3 +264,17 @@ WINDOW *nueva_ventana_E(int largo, int ancho, int pos_y, int pos_x)
   wrefresh(local_win);
   return local_win;
 }
+void buscar_y_reemplazar(string cadenaL,string palabra_B,string palabra_N){
+    int posicion = cadenaL.find(palabra_B);
+    while(posicion != -1){
+    cadenaL.replace(posicion,palabra_B.size(),palabra_N);
+    posicion = cadenaL.find(palabra_B, posicion + palabra_N.size());
+    }
+    nodo->borrar_lista();
+    char carac;
+    for(int i= 0; i <= cadenaL.length(); i++){
+        carac = cadenaL[i];
+        nodo->insertar_Nodo(carac);
+    }
+}
+
