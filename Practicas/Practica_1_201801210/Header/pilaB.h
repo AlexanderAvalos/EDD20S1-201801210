@@ -1,14 +1,45 @@
-#ifndef PILAB_H
-#define PILAB_H
+#include "datos_pila.h"
+#include <stdlib.h>
+#include <iostream>
+#include <stdio.h>
+using namespace std;
 
-
-class pilaB
+class NodoP
 {
 public:
-    pilaB();
-    static bool vacio();
-    static void push(char data);
-    static char pop();
-};
+    datosP *ultimoP = NULL;
+    datosP *primeroP = NULL;
 
-#endif // PILAB_H
+    bool vacio(){
+        if(primeroP == NULL){
+            return true;
+        }
+        return false;
+    }
+
+    void push(string palabraB, string palabraR, string estado ){
+        datosP *nuevo = new datosP();
+        nuevo->setestado(estado);
+        nuevo->setpalabraB(palabraB);
+        nuevo->setpalabraR(palabraR);
+        if(vacio() == true){
+            primeroP = nuevo;
+            ultimoP = primeroP;
+            nuevo->setsiguiente(NULL);
+        }else{
+            nuevo->setsiguiente(ultimoP);
+            ultimoP = nuevo;
+        }
+    }
+
+    datosP *pop(){
+         datosP *aux = new datosP();
+         aux = ultimoP;
+        if(aux == NULL){
+
+        }else{
+        ultimoP = aux->getsiguiente();
+        return aux;
+        delete aux;}
+    }
+};
