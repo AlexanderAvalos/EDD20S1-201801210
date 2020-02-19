@@ -6,14 +6,18 @@
 using namespace std;
 //clases
 #include "pilaB.h"
-#include "lista_circular.h"
+
 #include "lista_doble.h"
 #include "editor.h"
 #include "abrir_en_editor.h"
 #include "editor_rutas.h"
+
+
+NodoC *nodoC1 = new NodoC();
+
 string no;
  int smenu;
- NodoC *nodoC1 = new NodoC();
+
 void menu(){
     do{
     cout << "_________________________________________________\n";
@@ -42,11 +46,11 @@ void menu(){
     case 2:
        cout<<"Ingrese ruta: ";
        cin>>no;
-       Abrir_En_Editor::leer_archivo(no);
+       nodoC1 = Abrir_En_Editor::leer_archivo(no, nodoC1);
        Abrir_En_Editor::crear_EditorA();
         break;
     case 3:
-        Editor_Rutas::e_rutas();
+        Editor_Rutas::e_rutas(nodoC1);
 
         break;
     case 4:
