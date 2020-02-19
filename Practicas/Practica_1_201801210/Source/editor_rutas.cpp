@@ -3,17 +3,16 @@
 #include <iostream>
 #include <ncurses.h>
 #include <curses.h>
-#include "lista_circular.h"
 #include "abrir_en_editor.h"
 #include "fstream"
 #include "string"
 using namespace std;
 
 WINDOW *nueva_ventana_R(int largo, int ancho, int pos_y, int pos_x);
-
-void Editor_Rutas::e_rutas(){
+void generador4();
+void Editor_Rutas::e_rutas(NodoC *lista){
     Rutas *actual = new Rutas();
-    NodoC *nodoC;
+    NodoC *nodoC = lista;
     WINDOW *ventana;
     int x,y;
     int marcox=75,marcoy=20;
@@ -26,7 +25,7 @@ void Editor_Rutas::e_rutas(){
     wmove(ventana,2,2);
     actual = nodoC->primeroC;
     char nom,dire;
-    if(actual!=NULL)
+    if(nodoC->primeroC!=NULL)
      {  getyx(ventana,y,x);
           do{
             for(int i=0; i<= actual->getnombre().length();i++){
@@ -42,13 +41,44 @@ void Editor_Rutas::e_rutas(){
           }while(actual!= nodoC->primeroC);
       }
      else{
-        wprintw(ventana,"lista vacia");
+        for(int i=0; i<= actual->getnombre().length();i++){
+            nom = actual->getnombre()[i];
+            wprintw(ventana,"%c",nom);
+        }
+          for(int j=0; j<=actual->getdireccion().length();j++){
+              dire = actual->getdireccion()[j];
+              wprintw(ventana,"%c",dire);
+          }
 }
     int caracter;
-    noecho();
+
    wmove(ventana,marcoy-2,x);
    if((caracter=wgetch(ventana)) == 24 ){
-       wprintw(ventana,"reporte");
+       ofstream archivo_s("reporte4.dot");
+       Rutas *actual = new Rutas;
+       actual= nodoC->primeroC;
+       int indice=1;
+       string letra;
+       archivo_s<<"graph circular{"<<endl;
+       do{
+               letra = "Nodo"+to_string(indice) +" [label= \u0022 Buscada: \u0022"+ actual->getnombre()+
+             +", fillcolor=red, style=filled, shape=rectangle];";
+               archivo_s <<letra<<endl;
+               actual = actual->getsiguiente();
+               indice++;
+       }while(actual != nodoC->primeroC);
+       actual = nodoC->primeroC;
+       indice =1;
+       while (actual != NULL) {
+           letra = " ";
+           letra = "Nodo"+to_string(indice)+"--"+"Nodo"+to_string(indice+1)+";";
+           archivo_s<<letra;
+           actual = actual->getsiguiente();
+             indice++;
+       }
+       archivo_s<<"}"<<endl;
+       archivo_s.close();
+       generador4();
    }
     wrefresh(ventana);
     endwin();
@@ -60,4 +90,9 @@ WINDOW *nueva_ventana_R(int largo, int ancho, int pos_y, int pos_x)
   box(local_win, 0, 0);
   wrefresh(local_win);
   return local_win;
+}
+
+
+void generador4(){
+     system("dot -Tpng reporte4.dot -o reporte4.png");
 }
