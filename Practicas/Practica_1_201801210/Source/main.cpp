@@ -12,9 +12,8 @@ using namespace std;
 #include "abrir_en_editor.h"
 #include "editor_rutas.h"
 string no;
-
  int smenu;
- NodoC *nodoC1;
+ NodoC *nodoC1 = new NodoC();
 void menu(){
     do{
     cout << "_________________________________________________\n";
@@ -44,7 +43,6 @@ void menu(){
        cout<<"Ingrese ruta: ";
        cin>>no;
        Abrir_En_Editor::leer_archivo(no);
-       clear();
        Abrir_En_Editor::crear_EditorA();
         break;
     case 3:
@@ -52,6 +50,7 @@ void menu(){
 
         break;
     case 4:
+        cout<<"see you later";
         exit(0);
         break;
     }
