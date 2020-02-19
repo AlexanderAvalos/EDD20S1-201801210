@@ -14,6 +14,12 @@
 #include "iniciar_lista.h"
 using namespace std;
 
+void generadorE();
+void generador2E();
+void generador3E();
+void reporte_palabrasE();
+void reporte_palabrasRE();
+void generar_ReporteE();
 
 WINDOW *nueva_ventana_E(int largo, int ancho, int pos_y, int pos_x);
 void buscar_y_reemplazar(string cadenaL, string palabra_B, string palabra_N);
@@ -54,6 +60,7 @@ void Abrir_En_Editor::crear_EditorA(){
     }
     keypad(ventana,true);
     raw();
+    char ele;
     int caracter;
     while(cont != true){
         getyx(ventana,y,x);
@@ -96,7 +103,17 @@ void Abrir_En_Editor::crear_EditorA(){
             wmove(ventana,y,x-1);
             break;
         case 3:
-            printw("Reportes");
+            wmove(ventana,18,2);
+            wprintw(ventana,"a.lista b.palabras c. ordenadas");
+            ele = wgetch(ventana);
+            if(ele == 97){
+            generar_ReporteE();
+            generadorE();}
+            else if(ele == 98){
+              reporte_palabrasE();
+              generador2E();
+              reporte_palabrasRE();
+              generador3E();}
             break;
         case 10:
             getyx(ventana,y,x);
@@ -234,6 +251,7 @@ void  reconocer_Nombre(string dir){
 void Abrir_En_Editor::leer_archivo(string direccion){
     string texto;
     ifstream archivo;
+    reconocer_Nombre(direccion);
     char prue;
     if(!archivo.is_open()){
         archivo.open(direccion,ios::in);
@@ -278,3 +296,101 @@ void buscar_y_reemplazar(string cadenaL,string palabra_B,string palabra_N){
     }
 }
 
+
+
+
+void generar_ReporteE(){
+    ofstream archivo_s("reporte.dot");
+    Caracter *actual=new Caracter();
+    int indice=1;
+    string letra;
+    actual = nodo->primero;
+    archivo_s<<"graph lista{"<<endl;
+    while(actual != NULL){
+        if(actual->getcaracter() == ' '){
+            letra = "Nodo"+to_string(indice) +" [label= "+"Espacio"+"];";
+            archivo_s <<letra<<endl;
+        }else if(actual->getcaracter() == 10){
+            letra = "Nodo"+to_string(indice) +" [label= "+"salto"+"];";
+            archivo_s <<letra<<endl;
+        }else{
+            letra = "Nodo"+to_string(indice) +" [label= "+ actual->getcaracter()+"];";
+            archivo_s <<letra<<endl;
+        }
+      actual = actual->getsiguiente();
+      indice++;
+    }actual = nodo->primero;
+    indice =1;
+    while (actual != NULL) {
+        letra = " ";
+        letra = "Nodo"+to_string(indice)+"--"+"Nodo"+to_string(indice+1)+";";
+        archivo_s<<letra;
+        actual = actual->getsiguiente();
+          indice++;
+    }
+    archivo_s<<"}"<<endl;
+    archivo_s.close();
+}
+void generadorE(){
+     system("dot -Tpng reporte.dot -o reporte.png");
+}
+
+void reporte_palabrasE(){
+    ofstream archivo_s("reporte2.dot");
+    datosP *actual = new datosP;
+    actual= pilaBE->ultimoP;
+    int indice=1;
+    string letra;
+    archivo_s<<"graph buscar{"<<endl;
+    while(actual != NULL){
+            letra = "Nodo"+to_string(indice) +" [label= \u0022 Buscada: \u0022"+ actual->getpalabraB()+
+          +", fillcolor=green, style=filled, shape=rectangle];";
+            archivo_s <<letra<<endl;
+            actual = actual->getsiguiente();
+            indice++;
+    }actual = pilaBE->ultimoP;
+    indice =1;
+    while (actual != NULL) {
+        letra = " ";
+        letra = "Nodo"+to_string(indice+1)+"--"+"Nodo"+to_string(indice)+";";
+        archivo_s<<letra;
+        actual = actual->getsiguiente();
+          indice++;
+    }
+    archivo_s<<"}"<<endl;
+    archivo_s.close();
+}
+
+void generador2E(){
+     system("dot -Tpng reporte2.dot -o reporte2.png");
+}
+
+void reporte_palabrasRE(){
+    ofstream archivo_s("reporte3.dot");
+    datosP *actual = new datosP;
+    actual= pilaRE->ultimoP;
+    int indice=1;
+    string letra;
+    archivo_s<<"graph buscar{"<<endl;
+    while(actual != NULL){
+            letra = "Nodo"+to_string(indice) +" [label= \u0022 Buscada: \u0022"+ actual->getpalabraB()+
+          +", fillcolor=red, style=filled, shape=rectangle];";
+            archivo_s <<letra<<endl;
+            actual = actual->getsiguiente();
+            indice++;
+    }actual = pilaRE->ultimoP;
+    indice =1;
+    while (actual != NULL) {
+        letra = " ";
+        letra = "Nodo"+to_string(indice+1)+"--"+"Nodo"+to_string(indice)+";";
+        archivo_s<<letra;
+        actual = actual->getsiguiente();
+          indice++;
+    }
+    archivo_s<<"}"<<endl;
+    archivo_s.close();
+}
+
+void generador3E(){
+     system("dot -Tpng reporte3.dot -o reporte3.png");
+}
