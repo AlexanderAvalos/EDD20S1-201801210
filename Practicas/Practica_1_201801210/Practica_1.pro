@@ -10,11 +10,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    lista_doble.cpp \
-    lista_circular.cpp \
-    pilaB.cpp \
     editor.cpp \
-    abrir_en_editor.cpp
+    abrir_en_editor.cpp \
+    editor_rutas.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -32,7 +30,12 @@ HEADERS += \
     lista_circular.h \
     pilaB.h \
     editor.h \
-    abrir_en_editor.h
+    abrir_en_editor.h \
+    caracter.h \
+    datos_ruta.h \
+    editor_rutas.h \
+    datos_pila.h \
+    main.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../ncurses-6.1/lib/release/ -lncurses
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../ncurses-6.1/lib/debug/ -lncurses
