@@ -1,5 +1,4 @@
 #include "abrir_en_editor.h"
-#include "lista_circular.h"
 #include "lista_doble.h"
 #include <stdlib.h>
 #include <iostream>
@@ -11,7 +10,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "pilaB.h"
-#include "iniciar_lista.h"
 using namespace std;
 
 void generadorE();
@@ -223,9 +221,9 @@ void guardar_archivo_E(string ruta){
     archivo_s.close();
 }
 
-void  reconocer_Nombre(string dir){
+NodoC *  reconocer_Nombre(string dir, NodoC *lista){
     int contador = 0,contador2=0;
-
+    nodoC = lista;
     bool cona = false;
     int cantidad = dir.length();
     while(cona != true){
@@ -246,12 +244,13 @@ void  reconocer_Nombre(string dir){
         }
         contador++;
     }
+    return nodoC;
 }
 
-void Abrir_En_Editor::leer_archivo(string direccion){
+NodoC* Abrir_En_Editor::leer_archivo(string direccion, NodoC *lista){
     string texto;
     ifstream archivo;
-    reconocer_Nombre(direccion);
+     lista = reconocer_Nombre(direccion,lista);
     char prue;
     if(!archivo.is_open()){
         archivo.open(direccion,ios::in);
@@ -273,6 +272,7 @@ void Abrir_En_Editor::leer_archivo(string direccion){
         }
         archivo.close();
     }
+    return lista;
 }
 
 WINDOW *nueva_ventana_E(int largo, int ancho, int pos_y, int pos_x)
