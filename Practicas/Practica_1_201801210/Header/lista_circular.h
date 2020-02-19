@@ -6,8 +6,6 @@ using namespace std;
 
 class NodoC
 {
-private:
-    Rutas *rutas;
 public:
   Rutas *primeroC;
   Rutas *ultimoC;
@@ -18,7 +16,6 @@ public:
       }
       return false;
   }
-
   void insertar_NodoC(string nombre,string direccion){
       Rutas *nuevo = new Rutas();
       nuevo->setnombre(nombre);
@@ -37,18 +34,19 @@ public:
   void imprimir(){
       Rutas *aux = new Rutas();
           aux=primeroC;
-          int i=1;
-
           if(primeroC!=NULL)
            {
                 do
                 {    cout<<"  "<<aux->getnombre();
                     cout<<" "<<aux->getdireccion();
                      aux = aux->getsiguiente();
-                     i++;
                 }while(aux!=primeroC);
             }
            else
-               cout<<"\n\n\tLista vacia...!"<<endl;
+              aux->getdireccion();
+          aux->getnombre();
   }
+
 };
+
+
