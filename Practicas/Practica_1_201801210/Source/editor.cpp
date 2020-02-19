@@ -10,7 +10,6 @@
 #include "lista_doble.h"
 #include "pilaB.h"
 
-
 using namespace std;
 WINDOW *nueva_ventana(int largo, int ancho, int pos_y, int pos_x);
 void generador();
