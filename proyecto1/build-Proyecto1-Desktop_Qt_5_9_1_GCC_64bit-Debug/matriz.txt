@@ -1,0 +1,27 @@
+digraph{ bgcolor = gray 
+ node[fontcolor = black, height = 0.5, color = black ] 
+ [shape=box, style=filled, color=white] 
+ rankdir=LR 
+ edge  [color="black", dir=fordware]
+inicial[style = "filled" ; label = "inicial" ; pos = "0,0!"] 
+"Fi1"[style ="filled"; label="1";pos= "1,0! "]
+"Fi3"[style ="filled"; label="3";pos= "2,0! "]
+"Co1"[style ="filled"; label="1";pos= "0,-1! "]
+"Co3"[style ="filled"; label="3";pos= "0,-2! "]
+13[shape=box ,style ="filled"; label="c";pos = "1,-2!"]
+31[shape=box ,style ="filled"; label="a";pos = "2,-1!"]
+33[shape=box ,style ="filled"; label="a";pos = "2,-2!"]
+inicial->"Fi1"-> inicial -> "Co1"->inicial; 
+"Fi1"->"Fi3";
+"Fi3"->"Fi1";
+"Co1"->"Co3";
+"Co3"->"Co1";
+"Fi1"-> "13"; 
+"Fi3"-> "31"-> "33"; 
+"Co1"-> "31"; 
+"Co3"-> "13"-> "33"; 
+"13" ->"Fi1"; 
+"33" ->"31" ->"Fi3"; 
+"31" ->"Co1"; 
+"33" ->"13" ->"Co3"; 
+}
