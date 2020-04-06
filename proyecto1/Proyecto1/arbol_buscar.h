@@ -21,6 +21,7 @@ arbol_busqueda(){}
          return buscar(valor, raiz);
      }
     void inOrden(){
+        in(raiz);
         salida.open("InOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
         salida<< inOrden(raiz)<<endl;
@@ -29,6 +30,7 @@ arbol_busqueda(){}
         qInfo()<<system("dot -Tpng InOrden.txt -o InOrden.png");
     }
     void preOrden(){
+        pre(raiz);
         salida.open("preOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
         salida<< preOrden(raiz)<<endl;
@@ -37,6 +39,7 @@ arbol_busqueda(){}
         qInfo()<<system("dot -Tpng preOrden.txt -o preOrden.png");
     }
     void postOrden(){
+        post(raiz);
         salida.open("postOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
         salida<< postOrden(raiz)<<endl;
@@ -105,6 +108,7 @@ private:
         return sali;
     }
     string postOrden(nodoArbol *nodo){
+
         string sali =+ "";
         if(nodo->izquierda != nullptr){
            aux2 = nodo->izquierda;
@@ -145,6 +149,29 @@ private:
         }
     }
 
+    void post(nodoArbol *nodo){
+         if(nodo==nullptr)
+             return;
+         post(nodo->izquierda);
+         post(nodo->derecha);
+         cout<<'\t'<<nodo->datos.toStdString()<<endl;
+     }
+    void in(nodoArbol *nodo){
+         if(nodo==nullptr)
+             return;
+         post(nodo->izquierda);
+         cout<<'\t'<<nodo->datos.toStdString()<<endl;
+         post(nodo->derecha);
+
+     }
+    void pre(nodoArbol *nodo){
+         if(nodo==nullptr)
+             return;
+         cout<<'\t'<<nodo->datos.toStdString()<<endl;
+         post(nodo->izquierda);
+         post(nodo->derecha);
+
+     }
     nodoArbol * buscar(QString valor, nodoArbol *nodo){
            if(valor.compare(nodo->datos)==0)
                return nodo;
