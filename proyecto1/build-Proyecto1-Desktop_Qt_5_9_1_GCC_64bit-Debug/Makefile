@@ -249,7 +249,8 @@ DIST          = ../../Qt5.9.1/5.9.1/gcc_64/mkspecs/features/spec_pre.prf \
 		../Proyecto1/listasimplejp.h \
 		../Proyecto1/listatop.h \
 		../Proyecto1/matrizdispersa.h \
-		../Proyecto1/juego.h ../Proyecto1/main.cpp \
+		../Proyecto1/juego.h \
+		../Proyecto1/json.h ../Proyecto1/main.cpp \
 		../Proyecto1/juego.cpp
 QMAKE_TARGET  = Proyecto1
 DESTDIR       = 
@@ -636,7 +637,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt5.9.1/5.9.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../Proyecto1/nodo_lista_circular.h ../Proyecto1/cola.h ../Proyecto1/nodo_listadoble.h ../Proyecto1/nodo_arbol_busqueda.h ../Proyecto1/datos_listasimple_t.h ../Proyecto1/datos_matrizdispersa.h ../Proyecto1/nodo_listasimple_t.h ../Proyecto1/nodo_listasimple_jp.h ../Proyecto1/nodo_matrizdispersa.h ../Proyecto1/arbol_buscar.h ../Proyecto1/listadoble.h ../Proyecto1/nodocola.h ../Proyecto1/listacirulardoble.h ../Proyecto1/nodolista.h ../Proyecto1/listaletras.h ../Proyecto1/listasimplejp.h ../Proyecto1/listatop.h ../Proyecto1/matrizdispersa.h ../Proyecto1/juego.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Proyecto1/nodo_lista_circular.h ../Proyecto1/cola.h ../Proyecto1/nodo_listadoble.h ../Proyecto1/nodo_arbol_busqueda.h ../Proyecto1/datos_listasimple_t.h ../Proyecto1/datos_matrizdispersa.h ../Proyecto1/nodo_listasimple_t.h ../Proyecto1/nodo_listasimple_jp.h ../Proyecto1/nodo_matrizdispersa.h ../Proyecto1/arbol_buscar.h ../Proyecto1/listadoble.h ../Proyecto1/nodocola.h ../Proyecto1/listacirulardoble.h ../Proyecto1/nodolista.h ../Proyecto1/listaletras.h ../Proyecto1/listasimplejp.h ../Proyecto1/listatop.h ../Proyecto1/matrizdispersa.h ../Proyecto1/juego.h ../Proyecto1/json.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../Proyecto1/main.cpp ../Proyecto1/juego.cpp $(DISTDIR)/
 
 
@@ -828,16 +829,19 @@ juego.o: ../Proyecto1/juego.cpp ../Proyecto1/listadoble.h \
 		../../Qt5.9.1/5.9.1/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		../Proyecto1/listacirulardoble.h \
 		../Proyecto1/nodo_lista_circular.h \
+		../../Qt5.9.1/5.9.1/gcc_64/include/QtCore/QString \
 		../Proyecto1/listaletras.h \
 		../Proyecto1/nodolista.h \
 		../Proyecto1/listasimplejp.h \
 		../Proyecto1/nodo_listasimple_jp.h \
+		../Proyecto1/arbol_buscar.h \
+		../Proyecto1/nodo_arbol_busqueda.h \
 		../Proyecto1/matrizdispersa.h \
 		../Proyecto1/nodo_matrizdispersa.h \
-		../../Qt5.9.1/5.9.1/gcc_64/include/QtCore/QString \
 		../Proyecto1/datos_matrizdispersa.h \
 		../Proyecto1/cola.h \
 		../Proyecto1/nodocola.h \
+		../Proyecto1/json.h \
 		../Proyecto1/juego.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o juego.o ../Proyecto1/juego.cpp
 
@@ -848,4 +852,3 @@ install:  FORCE
 uninstall:  FORCE
 
 FORCE:
-
