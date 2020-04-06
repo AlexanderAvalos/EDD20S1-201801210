@@ -24,7 +24,8 @@ arbol_busqueda(){}
         in(raiz);
         salida.open("InOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
-        salida<< inOrden(raiz)<<endl;
+        salida<<" node [shape=rectangle];  "<<endl;
+         inOrden(raiz);
         salida<< "}"<<endl;
         salida.close();
         qInfo()<<system("dot -Tpng InOrden.txt -o InOrden.png");
@@ -33,7 +34,8 @@ arbol_busqueda(){}
         pre(raiz);
         salida.open("preOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
-        salida<< preOrden(raiz)<<endl;
+        salida<<" node [shape=rectangle];  "<<endl;
+        preOrden(raiz);
         salida<< "}"<<endl;
         salida.close();
         qInfo()<<system("dot -Tpng preOrden.txt -o preOrden.png");
@@ -42,7 +44,8 @@ arbol_busqueda(){}
         post(raiz);
         salida.open("postOrden.txt");
         salida << "digraph { rankdir=LR "<<endl;
-        salida<< postOrden(raiz)<<endl;
+        salida<<" node [shape=rectangle];  "<<endl;
+        postOrden(raiz);
         salida<< "}"<<endl;
         salida.close();
         qInfo()<<system("dot -Tpng postOrden.txt -o postOrden.png");
@@ -50,9 +53,8 @@ arbol_busqueda(){}
 
 private:
     nodoArbol *raiz;
-    nodoArbol *aux,*aux1,*aux2;
+    nodoArbol *aux;
     ofstream salida;
-    string prueba;
 
     void graphviz(nodoArbol *nodo, nodoArbol *padre ){
         if(nodo != nullptr){
@@ -74,55 +76,49 @@ private:
         }
     }
 
-    string inOrden(nodoArbol *nodo){
-        string sali =+ "";
+    void inOrden(nodoArbol *nodo){
         if(nodo->izquierda != nullptr){
-           sali = sali + inOrden(nodo->izquierda);
-           sali=  sali + aux->datos.toStdString() + "->" + nodo->datos.toStdString()+ ";\n";
+           inOrden(nodo->izquierda);
+           salida<< aux->datos.toStdString() << "->" << nodo->datos.toStdString()<< ";"<<endl;
            aux = nodo->izquierda;
         }
-        sali = sali + nodo->datos.toStdString()  +";\n";
+      salida << nodo->datos.toStdString()  <<";"<<endl;
         aux = nodo;
         if(nodo->derecha != nullptr){
-            sali = sali +aux->datos.toStdString() + "->" + nodo->derecha->datos.toStdString() + ";\n";
+            salida << aux->datos.toStdString() << "->" << nodo->derecha->datos.toStdString() << ";"<<endl;
             aux = nodo->derecha;
-            sali = sali + inOrden(nodo->derecha);
+            inOrden(nodo->derecha);
         }
-        return sali;
     }
-    string preOrden(nodoArbol *nodo){
-        string sali =+ "";
-        sali = sali + nodo->datos.toStdString()  +";\n";
-        aux1 = nodo;
+
+    void preOrden(nodoArbol *nodo){
+        salida<< nodo->datos.toStdString()  <<";"<<endl;
+        aux = nodo;
         if(nodo->izquierda != nullptr){
-           sali=  sali + aux1->datos.toStdString() + "->" + nodo->izquierda->datos.toStdString()+ ";\n";
-           aux1 = nodo->izquierda;
-           sali = sali + preOrden(nodo->izquierda);
+          salida<< aux->datos.toStdString() << "->" << nodo->izquierda->datos.toStdString()<< ";"<<endl;
+           aux = nodo->izquierda;
+            preOrden(nodo->izquierda);
         }
         if(nodo->derecha != nullptr){
-            sali = sali +aux1->datos.toStdString() + "->" + nodo->derecha->datos.toStdString() + ";\n";
-            sali = sali + preOrden(nodo->derecha);
-            aux1 = nodo->derecha;
-
+            salida << aux->datos.toStdString() << "->" << nodo->derecha->datos.toStdString() << ";"<<endl;
+            preOrden(nodo->derecha);
+            aux = nodo->derecha;
         }
-        return sali;
     }
-    string postOrden(nodoArbol *nodo){
 
-        string sali =+ "";
+    void postOrden(nodoArbol *nodo){
         if(nodo->izquierda != nullptr){
-           aux2 = nodo->izquierda;
-           sali = sali + postOrden(nodo->izquierda);
+           aux = nodo->izquierda;
+            postOrden(nodo->izquierda);
         }
         if(nodo->derecha != nullptr){
-            sali = sali +aux2->datos.toStdString() + "->" + nodo->derecha->datos.toStdString() + ";\n";
-            aux2 = nodo->derecha;
-            sali = sali + postOrden(nodo->derecha);
-            sali = sali +aux2->datos.toStdString() + "->" + nodo->datos.toStdString() + ";\n";
+            salida << aux->datos.toStdString() << "->" << nodo->derecha->datos.toStdString() << ";"<<endl;
+            aux = nodo->derecha;
+            postOrden(nodo->derecha);
+            salida << aux->datos.toStdString() << "->" << nodo->datos.toStdString() << ";"<<endl;
         }
-        sali = sali + nodo->datos.toStdString()  +";\n";
-        aux2 = nodo;
-        return sali;
+        salida<< nodo->datos.toStdString()  +";"<<endl;
+        aux = nodo;
     }
 
 
