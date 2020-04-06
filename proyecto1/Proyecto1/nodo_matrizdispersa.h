@@ -74,33 +74,35 @@ public:
   }
 
   void agregar(nodoMatriz *nodo){
-      nodoMatriz *nodoaux = primero;
-      bool existe = false;
-      while(nodoaux != NULL){
-          if(mayor(nodo,nodoaux)==true)
-              nodoaux=nodoaux->derecha;
-          else{
-              if(nodoaux==primero){
-                  nodo->derecha=nodoaux;
-                   nodoaux->izquierda=nodo;
-                  primero=nodo;
-                  existe=true;
-                  break;
-              }else{
-                  nodo->izquierda=nodoaux->izquierda;
-                  nodoaux->izquierda->derecha=nodo;
-                  nodo->derecha=nodoaux;
-                  nodoaux->izquierda=nodo;
-                  existe=true;
-                  break;
-              }
-          }
-      }
-      if(existe==false){
-          ultimo->derecha=nodo;
-          nodo->izquierda=ultimo;
-          ultimo=nodo;
-      }
+      nodoMatriz *nodoaux = this->primero;
+           bool insertado = false;
+
+           while(nodoaux!=nullptr){
+               if(mayor(nodo,nodoaux)==true)
+                   nodoaux=nodoaux->derecha;
+               else{
+                   if(nodoaux==primero){
+                       nodo->derecha=nodoaux;
+                       nodoaux->izquierda=nodo;
+                       primero=nodo;
+                       insertado=true;
+                       break;
+                   }else{
+                       nodo->izquierda=nodoaux->izquierda;
+                       nodoaux->izquierda->derecha=nodo;
+                       nodo->derecha=nodoaux;
+                       nodoaux->izquierda=nodo;
+
+                       insertado=true;
+                       break;
+                   }
+               }
+           }
+           if(insertado==false){
+               ultimo->derecha=nodo;
+               nodo->izquierda=ultimo;
+               ultimo=nodo;
+           }
    }
 
   nodoMatriz *buscar(QString val){
@@ -113,9 +115,22 @@ public:
           }
           return NULL;
       }
+  bool buscarx(QString val){
+      nodoMatriz *aux = primero;
+      while(aux != NULL)
+          if(aux->numero == val){
+            return true;
+          }else{
+              aux = aux->derecha;
+          }
+          return false;
+      }
 
   int mayor(nodoMatriz *valor1, nodoMatriz*valor2){
-      if(valor1->numero.compare(valor2->numero)>0){
+      int numero1,numero2;
+      numero1 = valor1->numero.toInt();
+      numero2=valor2->numero.toInt();
+      if(numero1>numero2){
           return true;
       }else
           return false;
@@ -141,6 +156,7 @@ public:
       this->primero = this->ultimo = NULL;
   }
 
+
   void imprimir(){
          nodoMatriz *temp = primero;
          while(temp!=nullptr){
@@ -163,33 +179,35 @@ public:
   }
 
   void agregar(nodoMatriz *nodo){
-      nodoMatriz *nodoaux = primero;
-      bool existe = false;
-      while(nodoaux != NULL){
-          if(mayor(nodo,nodoaux)==true)
-              nodoaux=nodoaux->siguiente;
-          else{
-              if(nodoaux==primero){
-                  nodo->abajo=nodoaux;
-                   nodoaux->arriba=nodo;
-                  primero=nodo;
-                  existe=true;
-                  break;
-              }else{
-                  nodo->arriba=nodoaux->arriba;
-                  nodoaux->arriba->abajo=nodo;
-                  nodo->abajo=nodoaux;
-                  nodoaux->arriba=nodo;
-                  existe=true;
-                  break;
-              }
-          }
-      }
-      if(existe==false){
-          ultimo->abajo=nodo;
-          nodo->arriba=ultimo;
-          ultimo=nodo;
-      }
+      nodoMatriz *nodoaux = this->primero;
+             bool insertado = false;
+
+             while(nodoaux!=nullptr){
+                 if(mayor(nodo,nodoaux)==true)
+                     nodoaux=nodoaux->abajo;
+                 else{
+                     if(nodoaux==primero){
+                         nodo->abajo=nodoaux;
+                         nodoaux->arriba=nodo;
+                         primero=nodo;
+                         insertado=true;
+                         break;
+                     }else{
+                         nodo->arriba=nodoaux->arriba;
+                         nodoaux->arriba->abajo=nodo;
+                         nodo->abajo=nodoaux;
+                         nodoaux->arriba=nodo;
+
+                         insertado=true;
+                         break;
+                     }
+                 }
+             }
+             if(insertado==false){
+                 ultimo->abajo=nodo;
+                 nodo->arriba=ultimo;
+                 ultimo=nodo;
+             }
    }
 
   nodoMatriz *buscar(QString val){
@@ -202,9 +220,22 @@ public:
           }
           return NULL;
       }
+  bool buscary(QString val){
+      nodoMatriz *aux = primero;
+      while(aux != NULL){
+          if(aux->numero == val){
+              return true;
+          }
+          aux = aux->abajo;
+      }
+      return false;
+  }
 
   int mayor(nodoMatriz *valor1, nodoMatriz*valor2){
-      if(valor1->numero.compare(valor2->numero)>0){
+      int numero1,numero2;
+      numero1 = valor1->numero.toInt();
+      numero2=valor2->numero.toInt();
+      if(numero1>numero2){
           return true;
       }else
           return false;
