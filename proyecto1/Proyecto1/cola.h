@@ -14,6 +14,7 @@ private:
     nodoCola *raiz;
     ofstream salida;
     listaletra *lista = new listaletra();
+
     bool vacio(){
         if (raiz == NULL){
             return true;
@@ -34,7 +35,7 @@ void graficar(){
        salida <<"label=<"<<endl;
        salida <<"<table border=\"0\" cellborder=\"1\" cellspacing=\"0\">"<<endl;
        while (aux->siguiente!=NULL) {
-           salida<<"<tr><td>" << aux->letra<< "</td></tr>"<<endl;
+           salida<<"<tr><td>" << aux->letra<<" x " <<aux->punteo<<"</td></tr>"<<endl;
            aux = aux->siguiente;
        }
        salida << "</table>> "<<endl;
@@ -44,30 +45,29 @@ void graficar(){
        qInfo()<<system("dot -Tpng fichas.txt -o fichas.png");
 }
 
-
-
 void listaa(){
     lista->lista();
     llenarcola();
-
 }
 void llenarcola(){
     srand(time(NULL));
-    int valor = rand() % max--;
+    int valor = 1 + rand() % max--;
     if(max == 0){
-    }else if(valor !=0){
-        push(lista->eliminar(lista->buscar(valor)));
+
+    }
+    else if(valor !=0){
+        push(lista->buscar(valor)->punto,lista->eliminar(lista->buscar(valor)));
         llenarcola();
     }else {
-         push(lista->eliminar(lista->buscar(valor+1)));
-        llenarcola();
-    }
-    recorrer();
+           push(lista->buscar(valor)->punto, lista->eliminar(lista->buscar(valor)) );
+           llenarcola();
+       }
 }
 
-    void push(char letra ){
+    void push(int puntos,char letra){
         nodoCola *nuevo = new nodoCola();
         nuevo->letra = letra;
+        nuevo->punteo = puntos;
         if (vacio()){
             raiz = nuevo;
             nuevo->siguiente = NULL;
@@ -81,13 +81,24 @@ void llenarcola(){
 
     char pop(){
         nodoCola *aux = new nodoCola();
+        aux = this->raiz;
         char info =aux->letra;
-        aux = raiz;
         if(vacio()){
             return 0;
         }else {
             raiz  = aux->siguiente ;
             delete aux;
+            return info;
+        }
+    }
+    int top(){
+        nodoCola *aux = new nodoCola();
+        aux = this->raiz;
+        int info =aux->punteo;
+        if(vacio()){
+            return 0;
+        }else {
+            raiz  = aux->siguiente ;
             return info;
         }
     }
