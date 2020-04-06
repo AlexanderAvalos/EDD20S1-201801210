@@ -6,9 +6,9 @@ using namespace std;
 class nodo_listadoble {
 public:
     char ficha;
+    int puntos;
     nodo_listadoble *siguiente;
     nodo_listadoble *anterior;
-    nodo_listadoble(){}
 };
 
 
