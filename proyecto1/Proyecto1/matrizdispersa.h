@@ -8,7 +8,7 @@ using namespace std;
 
 class matrizDisperza{
    public:
-    int cont=0;
+    int max;
     ofstream ficheroSalida;
     listahorizontal *lst_horizontal;
     listavertical *lst_vertical;
@@ -20,19 +20,20 @@ class matrizDisperza{
         size = 0;
     }
 
+    void maxmatriz(int maximo){
+        this->max = maximo;
+    }
 
-    void insertar(QString letra, QString x,QString y){
+    void insertar(QString letra,int punteo, QString x,QString y){
         nodoMatriz *horizontal =  lst_horizontal->buscar(x);
         nodoMatriz *vertical =  lst_vertical->buscar(y);
         if(horizontal == NULL && vertical == NULL){
-            cout<< "no existe"<<endl;
         }else{
-            agregar(letra,horizontal,vertical);
-            cout<<"insertador con exito"<<endl;
+            agregar(letra,punteo,horizontal,vertical);
         }
     }
 
-    void agregar(QString val, nodoMatriz *horizontal, nodoMatriz *vertical){
+    void agregar(QString val,int punteo, nodoMatriz *horizontal, nodoMatriz *vertical){
 
 
 
@@ -40,6 +41,7 @@ class matrizDisperza{
 
             nodoMatriz * nuevo = new nodoMatriz(horizontal->numero,vertical->numero);
             nuevo->dato.setpalabra(val);
+            nuevo->dato.setpunteo(punteo);
 
             horizontal->abajo=nuevo;//enlazamos la cabecera con el nodo
             vertical->derecha=nuevo;//enlazamos cabecera con el nodo
@@ -70,6 +72,7 @@ class matrizDisperza{
 
                 nodoMatriz *nodo = new nodoMatriz(horizontal->numero,vertical->numero);
                 nodo->dato.setpalabra(val);
+                nodo->dato.setpunteo(punteo);
 
                 nodoMatriz *nodoAuxiliarVertical =lst_vertical->buscar(vertical->numero);
                 nodoMatriz *nodoAux2 = nodoAuxiliarVertical->derecha;
@@ -289,21 +292,19 @@ class matrizDisperza{
             }
             ficheroSalida<<";\n";
 
-            //enlazar valores hacia arriba
-            derecha= lst_horizontal->primero;
-            cont=0;
+            //enlazar valores hacia abajo
+          /*  derecha= lst_horizontal->primero;
             while(derecha!=nullptr){
                 ficheroSalida << '\"'<< "Fi"<<derecha->numero.toStdString() << '\"';
                 abajo=derecha->abajo;
                 while(abajo!=nullptr){
                     if(abajo!=nullptr)
-                        ficheroSalida << "-> \""<<abajo->getCorrelativo().toStdString()<< '\"';
+                        ficheroSalida << "->\""<<abajo->getCorrelativo().toStdString()<< '\"';
                     abajo=abajo->abajo;
                 }
                 derecha=derecha->derecha;
                 ficheroSalida << "; \n";
             }
-            cont=0;
             //enlazar valores hacia derecha
             abajo = lst_vertical->primero;
             while(abajo!=nullptr){
@@ -311,7 +312,7 @@ class matrizDisperza{
                 derecha = abajo->derecha;
                 while(derecha!=nullptr){
                     if(derecha != nullptr)
-                    ficheroSalida << "-> \""<<derecha->getCorrelativo().toStdString() << '\"';
+                    ficheroSalida << "->\""<<derecha->getCorrelativo().toStdString() << '\"';
                     derecha=derecha->derecha;
                 }
                 abajo=abajo->abajo;
@@ -326,7 +327,7 @@ class matrizDisperza{
                 }
                 while(Actual->arriba!=nullptr){
                     if(Actual != nullptr)
-                        ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\" ->";
+                        ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\"->";
                     Actual=Actual->arriba;
                 }
 
@@ -345,7 +346,192 @@ class matrizDisperza{
                     Actual=Actual->derecha;
                 }
                 while(Actual->izquierda!=nullptr){
-                    ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\" ->";
+                    if(Actual != nullptr)
+                        ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\"->";
+                    Actual=Actual->izquierda;
+                }
+                ficheroSalida << '\"'<<"Co"<< abajo->numero.toStdString() << '\"';
+                ficheroSalida <<"; \n";
+                abajo=abajo->abajo;
+                Actual=abajo;
+            }*/
+            ficheroSalida<<"}\n";
+
+            qInfo() <<"Se imprimio";
+            ficheroSalida.close();
+            system("fdp -Tpng matriz.txt -o matriz.png");
+        }
+
+    void Graficar_enlaces(){
+
+            ficheroSalida.open("matriz.txt");
+            ficheroSalida << "digraph{ bgcolor = gray \n node[fontcolor = black, height = 0.5, color = black ] \n [shape=box, style=filled, color=white] \n rankdir=LR \n edge  [color=\"black\", dir=fordware]\n";
+            nodoMatriz *derecha = lst_horizontal->primero;
+            nodoMatriz *Actual= derecha;
+            int contador = 1;
+            ficheroSalida << "inicial[style = \"filled\" ; label = \"inicial\" ; pos = \"0,0!\"] \n";
+
+            //Obtener cabecera Horizontal
+            while(derecha!=nullptr){
+                ficheroSalida<< '\"'<< "Fi" <<Actual->numero.toStdString() << '\"'<< "[style =\"filled\"; label=\"" <<Actual->numero.toStdString() << "\";pos= \""<< std::to_string(contador)<< ",0! \"]\n";
+                contador++;
+                derecha= derecha->derecha;
+                Actual=derecha;
+            }
+
+            //Obtener Cabecera Vertical
+            contador= -1;
+            nodoMatriz *abajo = lst_vertical->primero;
+            Actual= abajo;
+
+            while(abajo!=nullptr){
+                ficheroSalida<< '\"'<<"Co" <<Actual->numero.toStdString() << '\"'<< "[style =\"filled\"; label=\"" << Actual->numero.toStdString() << "\";pos= \"0,"<< std::to_string(contador)<< "! \"]\n";
+                contador--;
+                abajo = abajo->abajo;
+                Actual=abajo;
+
+            }
+
+            //Obtener Valores;
+            derecha= lst_horizontal->primero;
+            Actual=derecha;
+            while(derecha!=nullptr){
+                abajo= lst_vertical->primero;
+                while(abajo!=nullptr){
+                   if(Actual->abajo!=nullptr){
+                    Actual= Actual->abajo;
+                         ficheroSalida <<Actual->getCorrelativo().toStdString()<<"[shape=box ,style =\"filled\"; label=\"" << Actual->dato.getpalabra().toStdString() << "\";pos = \""<<std::to_string(posX(Actual->getX()))<<','<<std::to_string(posY(Actual->getY()))<<"!\"]\n" ;
+                   }
+                    abajo=abajo->abajo;
+                }
+                derecha=derecha->derecha;
+                Actual=derecha;
+            }
+
+            //Enlazamos horizontal a la derecha
+            derecha= lst_horizontal->primero;
+            abajo=lst_vertical->primero;
+
+            ficheroSalida << "inicial->" <<'\"'<< "Fi"<<derecha->numero.toStdString()<< '\"' << "-> inicial -> "<<'\"'<<"Co"<<abajo->numero.toStdString()<<'\"'<<"->inicial; \n";
+            bool first = true;
+            Actual=derecha;
+
+            while(derecha!=nullptr){
+                if (first==true){
+                    ficheroSalida << '\"'<< "Fi"<< Actual->numero.toStdString() << '\"';
+                    first=false;
+                }else
+                    ficheroSalida <<"->"<<'\"'<< "Fi"<<Actual->numero.toStdString() << '\"';
+                derecha=derecha->derecha;
+                Actual=derecha;
+            }
+            ficheroSalida<<";\n";
+
+            //Enlazar Horizontales izquierda
+            derecha= lst_horizontal->ultimo;
+            first = true;
+            Actual = derecha;
+            while(derecha!=nullptr){
+                    if (first==true){
+                        ficheroSalida << '\"'<< "Fi"<<Actual->numero.toStdString() << '\"';
+                        first=false;
+                    }else
+                        ficheroSalida <<"->"<<'\"'<< "Fi"<<Actual->numero.toStdString() << '\"';
+                    derecha=derecha->izquierda;
+                    Actual=derecha;
+                }
+            ficheroSalida<<";\n";
+
+
+            //Enlazamos vertical a la derecha
+            derecha= lst_horizontal->primero;
+            abajo=lst_vertical->primero;
+
+            first = true;
+            Actual=abajo;
+
+            while(abajo!=nullptr){
+                if (first==true){
+                    ficheroSalida << '\"'<< "Co"<<Actual->numero.toStdString() << '\"';
+                    first=false;
+                }else
+                    ficheroSalida <<"->"<<'\"'<<"Co"<<Actual->numero.toStdString() << '\"';
+                abajo=abajo->abajo;
+                Actual=abajo;
+            }
+            ficheroSalida<<";\n";
+
+            //Enlazar verticales izquierda
+            abajo= lst_vertical->ultimo;
+            first = true;
+            Actual = abajo;
+            while(abajo!=nullptr){
+                if (first==true){
+                    ficheroSalida << '\"'<<"Co" <<Actual->numero.toStdString() << '\"';
+                    first=false;
+                }else
+                    ficheroSalida <<"->"<<'\"'<< "Co"<<Actual->numero.toStdString() << '\"';
+                abajo=abajo->arriba;
+                Actual=abajo;
+            }
+            ficheroSalida<<";\n";
+
+            //enlazar valores hacia abajo
+            derecha= lst_horizontal->primero;
+            while(derecha!=nullptr){
+                ficheroSalida << '\"'<< "Fi"<<derecha->numero.toStdString() << '\"';
+                abajo=derecha->abajo;
+                while(abajo!=nullptr){
+                    if(abajo!=nullptr)
+                        ficheroSalida << "->\""<<abajo->getCorrelativo().toStdString()<< '\"';
+                    abajo=abajo->abajo;
+                }
+                derecha=derecha->derecha;
+                ficheroSalida << "; \n";
+            }
+            //enlazar valores hacia derecha
+            abajo = lst_vertical->primero;
+            while(abajo!=nullptr){
+                ficheroSalida << '\"'<< "Co"<<abajo->numero.toStdString() << '\"';
+                derecha = abajo->derecha;
+                while(derecha!=nullptr){
+                    if(derecha != nullptr)
+                    ficheroSalida << "->\""<<derecha->getCorrelativo().toStdString() << '\"';
+                    derecha=derecha->derecha;
+                }
+                abajo=abajo->abajo;
+                ficheroSalida << "; \n";
+            }
+            //enlazar valores hacia arriba
+            derecha=lst_horizontal->primero;
+            Actual=derecha;
+            while(derecha!=nullptr){
+                while(Actual->abajo!=nullptr){
+                    Actual=Actual->abajo;
+                }
+                while(Actual->arriba!=nullptr){
+                    if(Actual != nullptr)
+                        ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\"->";
+                    Actual=Actual->arriba;
+                }
+
+                ficheroSalida << '\"'<< "Fi"<< derecha->numero.toStdString() << '\"';
+                ficheroSalida <<"; \n";
+                derecha=derecha->derecha;
+                Actual=derecha;
+            }
+
+            //Enlazar valores hacia izquierda
+            abajo=lst_vertical->primero;
+            Actual=abajo;
+            while(abajo!=nullptr){
+
+                while(Actual->derecha!=nullptr){
+                    Actual=Actual->derecha;
+                }
+                while(Actual->izquierda!=nullptr){
+                    if(Actual != nullptr)
+                        ficheroSalida << '\"'<< Actual->getCorrelativo().toStdString()<< "\"->";
                     Actual=Actual->izquierda;
                 }
                 ficheroSalida << '\"'<<"Co"<< abajo->numero.toStdString() << '\"';
@@ -354,10 +540,12 @@ class matrizDisperza{
                 Actual=abajo;
             }
             ficheroSalida<<"}\n";
+
             qInfo() <<"Se imprimio";
             ficheroSalida.close();
             system("fdp -Tpng matriz.txt -o matriz.png");
         }
+
 
 
 
@@ -374,6 +562,21 @@ class matrizDisperza{
                horizontal=horizontal->derecha;
            }
            return nullptr;
+       }
+
+       bool existe(QString x, QString y){
+           nodoMatriz *horizontal = lst_horizontal->primero;
+           while(horizontal!=nullptr){
+               nodoMatriz *vertical = horizontal->abajo;
+               while(vertical!=nullptr){
+                   if(vertical->getY()==y && vertical->getX()==x){
+                       return true;
+                   }
+                   vertical=vertical->abajo;
+               }
+               horizontal=horizontal->derecha;
+           }
+           return false;
        }
 
        int posX(QString horizontal)
