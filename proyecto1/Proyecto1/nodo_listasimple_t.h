@@ -2,9 +2,10 @@
 #define NODO_LISTASIMPLE_T_H
 #include <datos_listasimple_t.h>
 
-class nodo{
-    datostop puntuacion;
-    nodo *siguiente;
-}
+class nodot{
+public:
+    datostop dato;
+    nodot *siguiente;
+};
 
 #endif // NODO_LISTASIMPLE_T_H
