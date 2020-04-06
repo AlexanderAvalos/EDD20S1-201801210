@@ -1,14 +1,16 @@
 #ifndef DATOS_LISTASIMPLE_T_H
 #define DATOS_LISTASIMPLE_T_H
+#include "QString"
+
 class datostop
-{private:
-    string jugadores;
+{
+    QString jugadores;
     int puntuacion;
 public:
-    string getjugadores(){
+    QString getjugadores(){
         return jugadores;
     }
-    void setjugadores(string jugar){
+    void setjugadores(QString jugar){
         jugadores = jugar;
     }
     int getpuntuacion(){
