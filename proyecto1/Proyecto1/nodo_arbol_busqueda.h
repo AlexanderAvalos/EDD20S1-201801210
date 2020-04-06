@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <listadoble.h>
+#include <listasimplejp.h>
 using namespace std;
 
 class nodoArbol
@@ -13,11 +14,13 @@ class nodoArbol
 
 public:
     QString datos;
-    ListaDoble *fichas;
+    ListaDoble *lista;
+    listasimpleJP *top;
     nodoArbol *derecha;
     nodoArbol *izquierda;
     nodoArbol(QString nombre){
-        this->fichas = new ListaDoble();
+        this->lista = new ListaDoble();
+        this->top = new listasimpleJP();
         datos = nombre;
         izquierda = derecha = NULL;
     }
