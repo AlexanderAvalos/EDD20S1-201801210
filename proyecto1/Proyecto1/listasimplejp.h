@@ -21,28 +21,57 @@ private:
 
 public:
 
-    void grafica(){
+    void graficaj1(){
         nodo *actual = new nodo();
         actual = primero;
-        salida.open("/home/alex/Escritorio/puntaje.txt");
+        salida.open("puntajeJP1.txt");
         salida<<"digraph top{  rankdir=LR  "<<endl;
         salida<<" node [shape=rectangle];  "<<endl;
-        while(actual->siguiente != NULL){
-            salida<< actual->puntuacion << "->" << actual->siguiente->puntuacion << " ;" <<endl;
+        while(actual != NULL){
+            if(actual->siguiente != NULL){
+            salida<< actual->puntuacion << "->";
             actual = actual->siguiente;
+            }
+            else{
+                salida<< actual->puntuacion << ";";
+                actual = actual->siguiente;
+            }
         }
         salida<<"}"<<endl;
         salida.close();
-        qInfo()<<system("dot -Tpng /home/alex/Escritorio/puntaje.txt -o /home/alex/Escritorio/puntaje.png");
+        qInfo()<<system("dot -Tpng puntajeJP1.txt -o puntajeJP1.png");
     }
 
-    void recorrer(){
+
+    void graficaj2(){
+        nodo *actual = new nodo();
+        actual = primero;
+        salida.open("puntajeJP2.txt");
+        salida<<"digraph top{  rankdir=LR  "<<endl;
+        salida<<" node [shape=rectangle];  "<<endl;
+        while(actual != NULL){
+            if(actual->siguiente != NULL){
+            salida<< actual->puntuacion << "->";
+            actual = actual->siguiente;}
+            else{
+                salida<< actual->puntuacion << ";";
+                actual = actual->siguiente;
+            }
+        }
+        salida<<"}"<<endl;
+        salida.close();
+        qInfo()<<system("dot -Tpng puntajeJP2.txt -o puntajeJP2.png");
+    }
+
+    int  recorrer(){
+        int total;
         nodo *aux = new nodo();
         aux = primero;
         while(aux != NULL){
-            cout<<aux->puntuacion<<endl;
-            aux = aux->siguiente;
+           total = total + aux->puntuacion;
+           aux = aux->siguiente;
         }
+        return total;
     }
     void agregarpunteo(int puntos){
         nodo *nuevo = new nodo();
@@ -65,9 +94,11 @@ public:
                     {
                         auxb = aux;
                         aux = aux->siguiente;
+                        ultimo = aux;
                     }
                     if (puntos <= aux->puntuacion)
-                    { nuevo->siguiente = aux->siguiente;
+                    {
+                        nuevo->siguiente = aux->siguiente;
                          aux->siguiente = nuevo;
                     }
                     else
