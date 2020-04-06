@@ -42,4 +42,5 @@ HEADERS += \
     listasimplejp.h \
     listatop.h \
     matrizdispersa.h \
-    juego.h
+    juego.h\
+    json.h
