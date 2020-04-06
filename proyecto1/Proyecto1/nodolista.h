@@ -5,6 +5,7 @@ class nodoletra
 {
 public:
    char caracter;
+   int punto;
    nodoletra *siguiente;
 };
 
