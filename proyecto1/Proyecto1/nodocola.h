@@ -4,6 +4,7 @@
 class nodoCola{
 public:
     char letra;
+    int punteo;
     nodoCola *siguiente;
 };
 
