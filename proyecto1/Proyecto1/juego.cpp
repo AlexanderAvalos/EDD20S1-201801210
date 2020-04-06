@@ -25,6 +25,7 @@ cola *COLA = new cola();
 listaciruclardoble *diccionario = new listaciruclardoble();
 matrizDisperza *tablero = new matrizDisperza();
 listaTop *topgeneral = new listaTop();
+listasimpleJP *prueba = new listasimpleJP();
 nodoArbol *jp1 ;
 nodoArbol *jp2 ;
 void juego::crearJugador(){
@@ -34,6 +35,54 @@ void juego::crearJugador(){
     cin>>aux;
     nombre = QString::fromStdString(aux);
     arbol->insertarDato(nombre);
+}
+
+void juego::reportes(){
+    int con = 0;
+    int dato = 0;
+    QString nombre ;
+    string temp;
+    int menujuego = 0;
+        cout<<"opciones:"<<endl;
+        cout<<"1. recorridos"<<endl;
+        cout<<"2. topJugador"<<endl;
+        cout<<"3. topGeneral"<<endl;
+         cout<<"4. matriz"<<endl;
+        cin>>menujuego;
+        switch (menujuego) {
+        case 1:
+            arbol->graphviz();
+            arbol->inOrden();
+            arbol->preOrden();
+            arbol->postOrden();
+            break;
+        case 2:
+            cout<<"ingresa cantidad datos"<<endl;
+            cin>>con;
+            for (int var = 0; var < con; ++var) {
+                cout<<"ingrese dato"<<endl;
+                cin>>dato;
+                prueba->agregarpunteo(dato);
+            }
+            prueba->graficaj1();
+            break;
+        case 3:
+            cout<<"ingresa cantidad datos"<<endl;
+            cin>>con;
+            for (int var = 0; var < con; ++var) {
+                cout<<"ingrese nombre"<<endl;
+                cin>>temp;
+                nombre = QString::fromStdString(temp);
+                cout<<"ingrese dato"<<endl;
+                cin>>dato;
+                topgeneral->agregarpunteo(dato,nombre);
+            }
+            topgeneral->grafica();
+            break;
+          case 4:
+            tablero->Graficar_enlaces();
+            break;
+    }
 }
 
 
@@ -75,7 +124,6 @@ void juego::elegirJugadores(){
           tablero->Graficar();
           cout<<"termino turno jugador 2"<<endl;
       }
-      turno++;
   }
   tablero->Graficar();
   jp1->top->graficaj1();
@@ -85,10 +133,13 @@ void juego::elegirJugadores(){
   total2 = jp2->top->recorrer();
   topgeneral->agregarpunteo(total1,jp1->datos);
   topgeneral->agregarpunteo(total2,jp2->datos);
+  topgeneral->grafica();
 }
 
 void juego::menujuego(nodoArbol  *jugador){
     int menujuego = 0;
+    if(turno == 0){
+    jugador->lista->graficar1();}
         cout<<"opciones:"<<endl;
         cout<<"1. ingresar palabra"<<endl;
         cout<<"2. cambiar ficha"<<endl;
@@ -99,8 +150,7 @@ void juego::menujuego(nodoArbol  *jugador){
             insertarpalabra(jugador);
             break;
         case 2:
-            pedirficha(jugador->lista);
-            turno++;
+            pedirficha(jugador);
             break;
         case 3:
             fin = true;
@@ -108,17 +158,19 @@ void juego::menujuego(nodoArbol  *jugador){
     }
 }
 
+
 void juego::insertarpalabra(nodoArbol *jugador){
-    QString palabra,psx,psy;
+    QString palabra,psx,psy,temy,temx;
     QString letra;
     string bus;
     char le;
-    int posx,posy,totalp, punteo;
+    int valido=0;
+    int posx,posy,totalp, punteo,op =0,temx1,temy1;
     int cont = 0,orientacion;
     if(turno == 0){
+
         cout<<"ingrese palabra"<<endl;
         cin>>bus;
-        cout<<""<<endl;
         if(cont <= 6){
             cout<<"ingrese cordenada inicial x"<<endl;
             cin>>posx;
@@ -127,42 +179,53 @@ void juego::insertarpalabra(nodoArbol *jugador){
             cout<<"1.vertical   2.horizontal"<<endl;
             cin>>orientacion;
             palabra = QString::fromStdString(bus);
-            if(diccionario->buscar(palabra)){
+            if(diccionario->buscar(palabra) == true){
                 if(orientacion == 2){
                     for(int i = 0; i <= bus.length() ; i++){
                         le = bus[i];
-                        if(jugador->lista->sacar(bus[i]) != NULL){
-                            letra = jugador->lista->sacar(le)->ficha;
+                        if(jugador->lista->buscar1(le) == true){
+                            letra = le;
                             posx = posx+i;
                             psx = QString::number(posx);
                             psy = QString::number(posy);
-                            punteo = jugador->lista->sacar(bus[i])->puntos;
-                            tablero->insertarfila(posy);
-                            tablero->insertarcomluna(posx);
+                            punteo = jugador->lista->buscar(le);
+                            if(tablero->lst_horizontal->buscarx(psx)==false){
+                                tablero->insertarfila(psx);
+                            }
+                            if(tablero->lst_vertical->buscary(psy)== false){
+                                tablero->insertarcomluna(psy);
+                            }
                             tablero->insertar(letra,punteo,(psx),psy);
-                            punteo = punteo * buscarTD(psx,psy);
-                            totalp = totalp + punteo;
+                            op = punteo * buscarTD(letra,psx,psy);
+                            totalp = totalp + op;
+                            jugador->lista->sacar(le);
                         }else{
-                            cout<<"palabra incorrecta"<<endl;
-                            menujuego(jugador);
+                            jugador->top->agregarpunteo(totalp);
                             break;
                         }
                     }
+
                 }else if (orientacion == 1){
                     for(int i = 0; i <= bus.length() ; i++){
                         le = bus[i];
-                        if(jugador->lista->sacar(bus[i]) != NULL){
-                            letra = jugador->lista->sacar(le)->ficha;
+                        if(jugador->lista->buscar1(le) == true){
+                            letra = le;
                             posy = posy+i;
                             psx = QString::number(posx);
                             psy = QString::number(posy);
-                            punteo = jugador->lista->sacar(bus[i])->puntos;
+                            punteo = jugador->lista->buscar(le);
+                            if(tablero->lst_horizontal->buscarx(psx)==false){
+                                tablero->insertarfila(psx);
+                            }
+                            if(tablero->lst_vertical->buscary(psy)== false){
+                                tablero->insertarcomluna(psy);
+                            }
                             tablero->insertar(letra,punteo,(psx),psy);
-                            punteo = punteo * buscarTD(psx,psy);
-                            totalp = totalp + punteo;
+                            op = punteo * buscarTD(letra,psx,psy);
+                            totalp = totalp + op;
+                            jugador->lista->sacar(le);
                         }else{
-                            cout<<"palabra incorrecta"<<endl;
-                            menujuego(jugador);
+                            jugador->top->agregarpunteo(totalp);
                             break;
                         }
                     }
@@ -177,31 +240,105 @@ void juego::insertarpalabra(nodoArbol *jugador){
             }
         turno++;
         }else{
-         cout<<"aqqui val el otro turno"<<endl;
-        }
+        cout<<"ingrese palabra"<<endl;
+        cin>>bus;
+        if(cont <= 6){
+            cout<<"ingrese cordenada inicial x"<<endl;
+            cin>>posx;
+            cout<<"ingrese cordenada inicial y"<<endl;
+            cin>>posy;
+            cout<<"1.vertical   2.horizontal"<<endl;
+            cin>>orientacion;
+            palabra = QString::fromStdString(bus);
+            if(diccionario->buscar(palabra) == true){
+                if(orientacion == 2){
+                    for(int i = 0; i <= bus.length() ; i++){
+                        le = bus[i];
+                        if(jugador->lista->buscar1(le) == true){
+                            letra = le;
+                            posx = posx+i;
+                            psx = QString::number(posx);
+                            psy = QString::number(posy);
+                            punteo = jugador->lista->buscar(le);
+                            if(tablero->lst_horizontal->buscarx(psx)==false){
+                                tablero->insertarfila(psx);
+                            }
+                            if(tablero->lst_vertical->buscary(psy)== false){
+                                tablero->insertarcomluna(psy);
+                            }
+                            tablero->insertar(letra,punteo,(psx),psy);
+                            op = punteo * buscarTD(letra,psx,psy);
+                            totalp = totalp + op;
+                            jugador->lista->sacar(le);
+                        }else{
+                            jugador->top->agregarpunteo(totalp);
+                            break;
+                        }
+                    }
 
+                }else if (orientacion == 1){
+                    for(int i = 0; i <= bus.length() ; i++){
+                        le = bus[i];
+                        if(jugador->lista->buscar1(le) == true){
+                            letra = le;
+                            posy = posy+i;
+                            psx = QString::number(posx);
+                            psy = QString::number(posy);
+                            punteo = jugador->lista->buscar(le);
+                            if(tablero->lst_horizontal->buscarx(psx)==false){
+                                tablero->insertarfila(psx);
+                            }
+                            if(tablero->lst_vertical->buscary(psy)== false){
+                                tablero->insertarcomluna(psy);
+                            }
+                            tablero->insertar(letra,punteo,(psx),psy);
+                            op = punteo * buscarTD(letra,psx,psy);
+                            totalp = totalp + op;
+                            jugador->lista->sacar(le);
+                        }else{
+                            jugador->top->agregarpunteo(totalp);
+                            break;
+                        }
+                    }
+                }else{
+                        cout<<"especifique orientacion"<<endl;
+                    }
+                }else{
+                    cout<<"palabra no valida"<<endl;
+                }
+            }
+        turno++;
+
+    }
 }
 
-int juego::buscarTD(QString x,QString y){
+int juego::buscarTD(QString letra,QString x,QString y){
     if(tablero->buscar(x,y) != NULL){
        if( tablero->buscar(x,y)->dato.getpalabra() == "triples"){
+           tablero->buscar(x,y)->dato.setpalabra(letra);
            return 3;
        }else if(tablero->buscar(x,y)->dato.getpalabra() == "dobles"){
+          tablero->buscar(x,y)->dato.setpalabra(letra);
            return 2;
+       }else{
+           return 1;
        }
     }
     return 1;
 }
 
-void juego::pedirficha(ListaDoble *fichas){
-    fichas->vaciar(COLA);
-    fichas = new ListaDoble();
-    ponerfichas(fichas);
+void juego::pedirficha(nodoArbol *jugador){
+    jugador->lista->vaciar(COLA);
+     jugador->lista->limpiar();
+    ponerfichas( jugador->lista);
+    if(turno ==  0){
+        menujuego(jugador);
+    }
 }
 
 void juego::ponerfichas(ListaDoble *lista){
     for (int var = 0; var <= 6; var++) {
-        lista->insertar_Nodo(COLA->pop(),COLA->top());
+        lista->insertar_Nodo(COLA->top(),COLA->pop());
     }
 }
 
@@ -248,3 +385,115 @@ void juego::leerjason(){
      diccionario->insertar_Palabra(pa.toUpper());
  }
 }
+
+
+/*
+        cout<<"ingrese palabra"<<endl;
+        cin>>bus;
+        if(cont <= 6){
+            cout<<"ingrese cordenada inicial x"<<endl;
+            cin>>posx;
+            cout<<"ingrese cordenada inicial y"<<endl;
+            cin>>posy;
+            cout<<"1.vertical   2.horizontal"<<endl;
+            cin>>orientacion;
+            palabra = QString::fromStdString(bus);
+            if(diccionario->buscar(palabra) == true){
+                if(orientacion == 2){
+                    temx1 = posx;
+                    temy1 = posy;
+                    for(int i = 0; i <= bus.length() ; i++){
+                        temx1 = temx1+i;
+                        temx = QString::number(temx1);
+                        temy = QString::number(temy1);
+                        if(tablero->existe(temx,temy)){
+                          if( tablero->buscar(temx,temy)->dato.getpalabra() != "triples"|| tablero->buscar(temx,temy)->dato.getpalabra() == "dobles"){
+                            valido++;
+                          }
+                        }
+                    }
+                    for(int i = 0; i <= bus.length() ; i++){
+                        le = bus[i];
+                       if(valido != 0){
+                              letra = le;
+                             if(tablero->buscar(psx,psy)->dato.getpalabra() != letra){
+                                 if(jugador->lista->buscar1(le) == true){
+                                     posx = posx+i;
+                                     psx = QString::number(posx);
+                                     psy = QString::number(posy);
+                                     punteo = jugador->lista->buscar(le);
+                                     if(tablero->lst_horizontal->buscarx(psx)==false){
+                                         tablero->insertarfila(psx);
+                                     }
+                                     if(tablero->lst_vertical->buscary(psy)== false){
+                                         tablero->insertarcomluna(psy);
+                                     }
+                                     tablero->insertar(letra,punteo,(psx),psy);
+                                     op = punteo * buscarTD(letra,psx,psy);
+                                     totalp = totalp + op;
+                                     jugador->lista->sacar(le);
+                                 }else{
+                                     jugador->top->agregarpunteo(totalp);
+                                     break;
+                                 }
+                             }else{
+                                 totalp = totalp + tablero->buscar(psx,psy)->dato.getpunteo();
+                             }
+                       }else{
+                           cout<<"Palabra en espacio no valido"<<endl;
+                       }
+                    }
+                }else if (orientacion == 1){
+                    temx1 = posx;
+                    temy1 = posy;
+                    for(int i = 0; i <= bus.length() ; i++){
+                        temy1 = temy1+i;
+                        temx = QString::number(temx1);
+                        temy = QString::number(temy1);
+                        if(tablero->existe(temx,temy)){
+                            if( tablero->buscar(temx,temy)->dato.getpalabra() != "triples"|| tablero->buscar(temx,temy)->dato.getpalabra() == "dobles"){
+                                valido++;
+                            }
+                        }
+                    }
+                    for(int i = 0; i <= bus.length() ; i++){
+                        le = bus[i];
+                        if(valido != 0){
+                            letra = le;
+                            if(tablero->buscar(psx,psy)->dato.getpalabra() != letra){
+                                if(jugador->lista->buscar1(le) == true){
+                                    posy = posy+i;
+                                    psx = QString::number(posx);
+                                    psy = QString::number(posy);
+                                    punteo = jugador->lista->buscar(le);
+                                    if(tablero->lst_horizontal->buscarx(psx)==false){
+                                        tablero->insertarfila(psx);
+                                    }
+                                    if(tablero->lst_vertical->buscary(psy)== false){
+                                        tablero->insertarcomluna(psy);
+                                    }
+                                    tablero->insertar(letra,punteo,(psx),psy);
+                                    op = punteo * buscarTD(letra,psx,psy);
+                                    totalp = totalp + op;
+                                    jugador->lista->sacar(le);
+                                }else{
+                                    jugador->top->agregarpunteo(totalp);
+                                    break;
+                                }
+                            }else{
+                                totalp = totalp + tablero->buscar(psx,psy)->dato.getpunteo();
+                            }
+                        }else{
+                            cout<<"Palabra en espacio no valido"<<endl;
+                            break;
+                        }
+                    }
+                }else{
+                    cout<<"especifique orientacion"<<endl;
+                }
+            }else{
+                cout<<"palabra no valida"<<endl;
+            }
+        }
+        turno++;
+*/
